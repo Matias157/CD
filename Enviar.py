@@ -3,6 +3,7 @@ from socket import *
 import matplotlib.pyplot as plt
 import numpy as np
 from multiprocessing import Process
+import pickle
 
 def my_lines(ax, pos, *args, **kwargs):
     if ax == 'x':
@@ -12,12 +13,11 @@ def my_lines(ax, pos, *args, **kwargs):
         for p in pos:
             plt.axhline(p, *args, **kwargs)
 
-host = "127.0.0.1"
+host = "192.168.0.2"
 port = 13000
 addr = (host, port)
 UDPSock = socket(AF_INET, SOCK_DGRAM)
 mensagem = input("Entre a mensagem: ")
-UDPSock.sendto(mensagem.encode('latin_1'), addr)
 
 def plot_graph():
 	plt.show()
@@ -75,6 +75,20 @@ while i != len(intbits):
 print(intbits)
 print(AMI)
 print(pseudoternario)
+
+while(True):
+	opcao = input("Escolha a codificação:\n1 = AMI\n2 = Pseudoternário\n")
+	if opcao == "1":
+		data = pickle.dumps(AMI)
+		UDPSock.sendto(data, addr)
+		break
+	elif opcao == "2":
+		data = pickle.dumps(pseudoternario)
+		UDPSock.sendto(data, addr)
+		break
+	else:
+		print("Valor incorreto!!!")
+		continue
 
 data1 = np.repeat(intbits, 2)
 data2 = np.repeat(AMI, 2)
