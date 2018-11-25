@@ -34,79 +34,95 @@ while j != len(bits):
 		intbits.append(1)
 	j += 1
 
-AMI = []
-i = 0
-onepos = 0
-while i != len(intbits):
-	if intbits[i] == 0 and i == 0:
-		AMI.append(0)
-	if intbits[i] == 1 and i == 0:
-		AMI.append(0.5)
-		onepos = i
-	if intbits[i] == 0 and i != 0:
-		AMI.append(0)
-	if intbits[i] == 1 and i != 0:
-		if AMI[onepos] == 0.5:
-			AMI.append(-0.5)
-		else:
-			AMI.append(0.5)
-		onepos = i
-	i += 1
-
-pseudoternario = []
-i = 0
-zeropos = 0
-while i != len(intbits):
-	if intbits[i] == 0 and i == 0:
-		pseudoternario.append(0.5)
-		zeropos = i
-	if intbits[i] == 1 and i == 0:
-		pseudoternario.append(0)
-	if intbits[i] == 1 and i != 0:
-		pseudoternario.append(0)
-	if intbits[i] == 0 and i != 0:
-		if pseudoternario[zeropos] == 0.5:
-			pseudoternario.append(-0.5)
-		else:
-			pseudoternario.append(0.5)
-		zeropos = i
-	i += 1
-
 print(intbits)
-print(AMI)
-print(pseudoternario)
 
 while(True):
 	opcao = input("Escolha a codificação:\n1 = AMI\n2 = Pseudoternário\n")
 	if opcao == "1":
-		data = pickle.dumps(AMI)
+		AMI = []
+		i = 0
+		onepos = 0
+		while i != len(intbits):
+			if intbits[i] == 0 and i == 0:
+				AMI.append(0)
+			if intbits[i] == 1 and i == 0:
+				AMI.append(0.5)
+				onepos = i
+			if intbits[i] == 0 and i != 0:
+				AMI.append(0)
+			if intbits[i] == 1 and i != 0:
+				if AMI[onepos] == 0.5:
+					AMI.append(-0.5)
+				else:
+					AMI.append(0.5)
+				onepos = i
+			i += 1
+		enviar = ["A"] + AMI[:]
+		print(enviar)
+
+		data = pickle.dumps(enviar)
+
 		UDPSock.sendto(data, addr)
+
+		data1 = np.repeat(intbits, 2)
+		data2 = np.repeat(AMI, 2)
+		t = 0.5 * np.arange(len(data1))
+
+		my_lines('y', [0, 4], color='.5', linewidth = 1)
+		plt.step(t, data1 + 4, 'r', linewidth = 1, where='post')
+		plt.step(t, data2, 'r', linewidth = 1, where='post')
+		plt.ylim([-1,6])
+
+		for tbit, bit in enumerate(bits):
+			plt.text(tbit + 0.5, 5.5, str(bit))
+
+		plt.text(0.1, 6.1, "Mensagem: " + mensagem)
+		plt.text(0.1, 1, "AMI")
 		break
 	elif opcao == "2":
-		data = pickle.dumps(pseudoternario)
+		pseudoternario = []
+		i = 0
+		zeropos = 0
+		while i != len(intbits):
+			if intbits[i] == 0 and i == 0:
+				pseudoternario.append(0.5)
+				zeropos = i
+			if intbits[i] == 1 and i == 0:
+				pseudoternario.append(0)
+			if intbits[i] == 1 and i != 0:
+				pseudoternario.append(0)
+			if intbits[i] == 0 and i != 0:
+				if pseudoternario[zeropos] == 0.5:
+					pseudoternario.append(-0.5)
+				else:
+					pseudoternario.append(0.5)
+				zeropos = i
+			i += 1
+		enviar = ["P"] + pseudoternario[:]
+		print(enviar)
+
+		data = pickle.dumps(enviar)
+
 		UDPSock.sendto(data, addr)
+
+		data1 = np.repeat(intbits, 2)
+		data3 = np.repeat(pseudoternario, 2)
+		t = 0.5 * np.arange(len(data1))
+
+		my_lines('y', [0, 4], color='.5', linewidth = 1)
+		plt.step(t, data1 + 4, 'r', linewidth = 1, where='post')
+		plt.step(t, data3, 'r', linewidth = 1, where='post')
+		plt.ylim([-1,6])
+
+		for tbit, bit in enumerate(bits):
+			plt.text(tbit + 0.5, 5.5, str(bit))
+
+		plt.text(0.1, 6.1, "Mensagem: " + mensagem)
+		plt.text(0.1, 1, "Pseudoternario")
 		break
 	else:
 		print("Valor incorreto!!!")
 		continue
-
-data1 = np.repeat(intbits, 2)
-data2 = np.repeat(AMI, 2)
-data3 = np.repeat(pseudoternario, 2)
-t = 0.5 * np.arange(len(data1))
-
-my_lines('y', [0, 2, 4], color='.5', linewidth = 1)
-plt.step(t, data1 + 4, 'r', linewidth = 1, where='post')
-plt.step(t, data2 + 2, 'r', linewidth = 1, where='post')
-plt.step(t, data3, 'r', linewidth = 1, where='post')
-plt.ylim([-1,6])
-
-for tbit, bit in enumerate(bits):
-	plt.text(tbit + 0.5, 5.5, str(bit))
-
-plt.text(0.1, 6.1, "Mensagem: " + mensagem)
-plt.text(0.1, 3, "AMI")
-plt.text(0.1, 1, "Pseudoternario")
 
 plt.gca().axis('off')
 

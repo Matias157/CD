@@ -31,31 +31,28 @@ print("Mensagem recebida: " + cod)
 
 data = pickle.loads(cod)
 
-while(True):
-	opcao = input("Escolha a codificação:\n1 = AMI\n2 = Pseudoternário\n")
-	if opcao == "1":
-		codfic = "AMI"
-		mensagem = []
-		i = 0
-		while i != len(data):
-			if data[i] == 0:
-				mensagem.append(0)
-			if data[i] == 0.5 or data[i] == -0.5:
-				mensagem.append(1)
-			i += 1
-	elif opcao == "2":
-		codfic = "Pseudoternário"
-		mensagem = []
-		i = 0
-		while i != len(data):
-			if data[i] == 0:
-				mensagem.append(1)
-			if data[i] == 0.5 or data[i] == -0.5:
-				mensagem.append(0)
-			i += 1
-	else:
-		print("Valor incorreto!!!")
-		continue
+if(data[0] == 'A'):
+	data.pop(0)
+	codfic = "AMI"
+	mensagem = []
+	i = 0
+	while i != len(data):
+		if data[i] == 0:
+			mensagem.append(0)
+		if data[i] == 0.5 or data[i] == -0.5:
+			mensagem.append(1)
+		i += 1
+else:
+	data.pop(0)
+	codfic = "Pseudoternário"
+	mensagem = []
+	i = 0
+	while i != len(data):
+		if data[i] == 0:
+			mensagem.append(1)
+		if data[i] == 0.5 or data[i] == -0.5:
+			mensagem.append(0)
+		i += 1
 
 data1 = np.repeat(mensagem, 2)
 data2 = np.repeat(data, 2)
